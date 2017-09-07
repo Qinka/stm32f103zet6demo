@@ -1,0 +1,29 @@
+
+## Mini-ver for cmake
+cmake_minimum_required (VERSION 3.3)
+
+## project name
+project (stm32f103zet6demo)
+
+## compile
+set (CMAKE_C_COMPILER "arm-unknown-eabi-gcc")
+set (CMAKE_C_FLAGS "$ENV{CCFLAGS} -mcpu=cortex-m3 -mthumb")
+
+## setting up the baisc file for stm32f103zet6
+### basic path
+set (BASIC_PATH "${PROJECT_SOURCE_DIR}/stm32f103zet6")
+### for source
+set (BASIC_SRC_PATH "${BASIC_PATH}/source")
+set (BASIC_SRC_FILE ${BASIC_SRC_FILE} "${BASIC_SRC_PATH}/core_cm3.c" "${BASIC_SRC_PATH}/startup.s" "${BASIC_SRC_PATH}/system_stm32f10x.c")
+### for include
+set (BASIC_INC_PATH "${BASIC_PATH}/include")
+
+## macro
+add_definitions ("-D STM32F10X_HD")
+
+## include path
+include_directories (${BASIC_INC_PATH})
+
+
+# sub
+add_subdirectory(demo1)
