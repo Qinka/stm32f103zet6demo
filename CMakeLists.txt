@@ -5,9 +5,13 @@ cmake_minimum_required (VERSION 3.3)
 ## project name
 project (stm32f103zet6demo)
 
+## language
+enable_language(C ASM)
+
 ## compile
 set (CMAKE_C_COMPILER "arm-unknown-eabi-gcc")
 set (CMAKE_C_FLAGS "$ENV{CCFLAGS} -mcpu=cortex-m3 -mthumb")
+set (CMAKE_ASM_COMPILER "arm-unknown-eabi-gcc")
 
 ## setting up the baisc file for stm32f103zet6
 ### basic path
@@ -17,6 +21,8 @@ set (BASIC_SRC_PATH "${BASIC_PATH}/source")
 set (BASIC_SRC_FILE ${BASIC_SRC_FILE} "${BASIC_SRC_PATH}/core_cm3.c" "${BASIC_SRC_PATH}/startup.s" "${BASIC_SRC_PATH}/system_stm32f10x.c")
 ### for include
 set (BASIC_INC_PATH "${BASIC_PATH}/include")
+### for linker
+set (CMAKE_EXE_LINKER_FLAGS " -T ${BASIC_PATH}/stm32f103ze.ld")
 
 ## macro
 add_definitions ("-D STM32F10X_HD")
