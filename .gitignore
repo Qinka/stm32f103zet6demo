@@ -11,6 +11,7 @@ CTestTestfile.cmake
 
 # for cmake build
 build
+build.*
 !build/.placeholder
 
 # for emacs

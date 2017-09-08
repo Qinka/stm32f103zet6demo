@@ -1,0 +1,29 @@
+// config file for the demo1
+#ifndef _CONFIG_H_
+#define _CONFIG_H
+
+
+// for led1
+#define _LED_1_GPIO_SET_  (@LED_1_GPIO_SET@)
+#define _LED_1_GPIO_PORT_ (@LED_1_GPIO_PORT@)
+#define _LED_1_GPIO_CLK_  (@LED_1_GPIO_CLK@)
+#if LED_1_GPIO_PORT > 7
+#define _LED_1_GPIO_CR_ CRH
+#else
+#define _LED_1_GPIO_CR_ CRL
+#endif
+#if LED_1_GPIO_PORT > 7
+#define _LED_1_GPIO_CRI_ ((_LED_1_GPIO_PORT_ - 8) * 4)
+#else
+#define _LED_1_GPIO_CRI_ ((_LED_1_GPIO_PORT_)     * 4)
+#endif
+// for led2
+#define _LED_2_GPIO_SET_  (@LED_2_GPIO_SET@)
+#define _LED_2_GPIO_PORT_ (@LED_2_GPIO_PORT@)
+#define _LED_2_GPIO_CLK_  (@LED_2_GPIO_CLK@)
+// for key1
+#define _KEY_1_GPIO_SET_  (@KEY_1_GPIO_SET@)
+#define _KEY_1_GPIO_PORT_ (@KEY_1_GPIO_PORT@)
+#define _KEY_1_GPIO_CLK_  (@KEY_1_GPIO_CLK@)
+
+#endif // _CONFIG_H_

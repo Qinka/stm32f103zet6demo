@@ -1,4 +1,6 @@
 #include "stm32f10x.h"
+#include "config.h"
+
 
 int _exit(void)
 {
@@ -10,13 +12,14 @@ int main(void)
 {
   // init GPIO
   // init clock
-  RCC -> APB2ENR |= 1 << 3; // PB
+  //                        PB
+  RCC -> APB2ENR |= (1 << _LED_1_GPIO_CLK_);
   RCC -> APB2ENR |= 1 << 6; // PE
   RCC -> APB2ENR |= 1 << 7; // PF
   RCC -> APB2ENR |= 1 << 0; // AFIO
   // clean gpio (PB0)
-  GPIOB -> CRL &= 0xFFFFFFF0;
-  GPIOB -> CRL |= 0b0011 << 0;
+  _LED_1_GPIO_SET_ -> _LED_1_GPIO_CR_ &= ~ (0xF << _LED_1_GPIO_CRI_);
+  _LED_1_GPIO_SET_ -> _LED_1_GPIO_CR_ |= 0b0011 << _LED_1_GPIO_CRI_;
   // clean gpio (PF7)
   GPIOF -> CRL &= 0x0FFFFFFF;
   GPIOF -> CRL |= 0b0011 << 28;
@@ -41,9 +44,9 @@ int main(void)
 
   GPIOF -> ODR |= 1 << 7;
   while (1) {
-    GPIOB -> ODR |= 1 << 0;
+    _LED_1_GPIO_SET_ -> ODR |=    0b1 << _LED_1_GPIO_PORT_;
     loopDelay();
-    GPIOB -> ODR &= ~(1 << 0);
+    _LED_1_GPIO_SET_ -> ODR &= ~ (0b1 << _LED_1_GPIO_PORT_);
     loopDelay();
   }
   return 0;
