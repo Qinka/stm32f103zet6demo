@@ -1,6 +1,6 @@
 // config file for the demo1
 #ifndef _CONFIG_H_
-#define _CONFIG_H
+#define _CONFIG_H_
 
 
 // for led1
@@ -21,9 +21,52 @@
 #define _LED_2_GPIO_SET_  (@LED_2_GPIO_SET@)
 #define _LED_2_GPIO_PORT_ (@LED_2_GPIO_PORT@)
 #define _LED_2_GPIO_CLK_  (@LED_2_GPIO_CLK@)
+#if LED_2_GPIO_PORT > 7
+#define _LED_2_GPIO_CR_ CRH
+#else
+#define _LED_2_GPIO_CR_ CRL
+#endif
+#if LED_2_GPIO_PORT > 7
+#define _LED_2_GPIO_CRI_ ((_LED_2_GPIO_PORT_ - 8) * 4)
+#else
+#define _LED_2_GPIO_CRI_ ((_LED_2_GPIO_PORT_)     * 4)
+#endif
 // for key1
 #define _KEY_1_GPIO_SET_  (@KEY_1_GPIO_SET@)
 #define _KEY_1_GPIO_PORT_ (@KEY_1_GPIO_PORT@)
 #define _KEY_1_GPIO_CLK_  (@KEY_1_GPIO_CLK@)
-
+#if KEY_1_GPIO_PORT > 7
+#define _KEY_1_GPIO_CR_ CRH
+#else
+#define _KEY_1_GPIO_CR_ CRL
+#endif
+#if KEY_1_GPIO_PORT > 7
+#define _KEY_1_GPIO_CRI_ ((_KEY_1_GPIO_PORT_ - 8) * 4)
+#else
+#define _KEY_1_GPIO_CRI_ ((_KEY_1_GPIO_PORT_)     * 4)
+#endif
+#define _KEY_1_EXTI_IDX_ (_KEY_1_GPIO_PORT_ / 4 + 1)
+#define _KEY_1_EXTI_MOV_ (_KEY_1_GPIO_PORT_ % 4 * 4)
+#define _KEY_1_EXTI_SEL_ (_KEY_1_GPIO_CLK_ - 2)
+#if _KEY_1_GPIO_PORT_ == 0
+#define _KEY_1_IRQn_ EXTI0_IRQn
+#endif
+#if _KEY_1_GPIO_PORT_ == 1
+#define _KEY_1_IRQn_ EXTI1_IRQn
+#endif
+#if _KEY_1_GPIO_PORT_ == 2
+#define _KEY_1_IRQn_ EXTI2_IRQn
+#endif
+#if _KEY_1_GPIO_PORT_ == 3
+#define _KEY_1_IRQn_ EXTI3_IRQn
+#endif
+#if _KEY_1_GPIO_PORT_ == 4
+#define _KEY_1_IRQn_ EXTI4_IRQn
+#endif
+#if _KEY_1_GPIO_PORT_ > 4 && _KEY_1_GPIO_PORT_ <= 10
+#define _KEY_1_IRQn_ EXTI10_5_IRQn
+#endif
+#if _KEY_1_GPIO_PORT_ > 10 && _KEY_1_GPIO_PORT_ <=15
+#define _KEY_1_IRQn_ EXTI15_10_IRQn
+#endif
 #endif // _CONFIG_H_

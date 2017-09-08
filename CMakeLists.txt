@@ -9,9 +9,12 @@ project (stm32f103zet6demo)
 enable_language(C ASM)
 
 ## compile
-set (CMAKE_C_COMPILER "arm-unknown-eabi-gcc")
+if (NOT (DEFINED "ARM_GCC"))
+  set (ARM_GCC "arm-unknown-eabi-gcc")
+endif (NOT (DEFINED "ARM_GCC"))
+set (CMAKE_C_COMPILER "${ARM_GCC}")
 set (CMAKE_C_FLAGS "$ENV{CCFLAGS} -mcpu=cortex-m3 -mthumb")
-set (CMAKE_ASM_COMPILER "arm-unknown-eabi-gcc")
+set (CMAKE_ASM_COMPILER "${ARM_GCC}")
 
 ## setting up the baisc file for stm32f103zet6
 ### basic path
@@ -25,7 +28,7 @@ set (BASIC_INC_PATH "${BASIC_PATH}/include")
 set (CMAKE_EXE_LINKER_FLAGS " -T ${BASIC_PATH}/stm32f103ze.ld")
 
 ## macro
-add_definitions ("-D STM32F10X_HD")
+add_definitions ("-Os -D STM32F10X_HD")
 
 ## include path
 include_directories (${BASIC_INC_PATH})

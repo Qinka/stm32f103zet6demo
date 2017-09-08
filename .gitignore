@@ -23,3 +23,5 @@ auto
 # for c
 *.o
 
+# for vs code
+.vscode

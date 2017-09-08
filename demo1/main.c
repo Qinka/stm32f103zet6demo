@@ -21,16 +21,16 @@ int main(void)
   _LED_1_GPIO_SET_ -> _LED_1_GPIO_CR_ &= ~ (0xF << _LED_1_GPIO_CRI_);
   _LED_1_GPIO_SET_ -> _LED_1_GPIO_CR_ |= 0b0011 << _LED_1_GPIO_CRI_;
   // clean gpio (PF7)
-  GPIOF -> CRL &= 0x0FFFFFFF;
-  GPIOF -> CRL |= 0b0011 << 28;
-  // clean key (PC13)
-  GPIOC -> CRH &= 0xFF0FFFFF;
-  GPIOC -> CRH |= 0b1000 << 20;
-  AFIO  -> EXTICR[3] &= ~(0x0F << 4);
-  AFIO  -> EXTICR[3] |= 2 << 4;
-  EXTI  -> IMR  |= 0b1 << 13;
-  EXTI  -> FTSR |= 0b1 << 13;
-  // init group
+  _LED_2_GPIO_SET_ -> _LED_2_GPIO_CR_ &= ~ (0xF << _LED_2_GPIO_CRI_);
+  _LED_2_GPIO_SET_ -> _LED_2_GPIO_CR_ |= 0b0011 << _LED_2_GPIO_CRI_;
+  // clean key (PC13)  
+  _KEY_1_GPIO_SET_ -> _KEY_1_GPIO_CR_ &= ~ (0xF << _KEY_1_GPIO_CRI_);
+  _KEY_1_GPIO_SET_ -> _KEY_1_GPIO_CR_ |= 0b0011 << _KEY_1_GPIO_CRI_;
+  AFIO -> EXTICR[_KEY_1_EXTI_IDX_] &= ~(0xF << _KEY_1_EXTI_MOV_);
+  AFIO -> EXTICR[_KEY_1_EXTI_IDX_] |= _KEY_1_EXTI_SEL_ << _KEY_1_EXTI_MOV_;
+  EXTI -> IMR  |= 0b1 << _KEY_1_GPIO_PORT_;
+  EXTI -> FTSR |= 0b1 << _KEY_1_GPIO_PORT_;
+  // init group (group 2)
   u32 tmp = SCB -> AIRCR;
   tmp &= 0x0000F8FF;
   tmp |= 0x05FA000;
@@ -39,15 +39,14 @@ int main(void)
   // tmp = 2 << 2  =  0b1000
   // tmp |= (3 & (0b1111 >> 2) = 0b11 & 0b11 = 0b11) = 0b1011
   // tmp &= 0x0f = 0b1011
-  NVIC -> ISER[EXTI15_10_IRQn / 32] |= 1 << (EXTI15_10_IRQn % 32);
-  NVIC -> IP[EXTI15_10_IRQn] |= 0b1011 << 4;
+  NVIC -> ISER[_KEY_1_IRQn_ / 32] |= 1 << (_KEY_1_IRQn_ % 32);
+  NVIC -> IP[_KEY_1_IRQn_] |= 0b1011 << 4;
 
-  GPIOF -> ODR |= 1 << 7;
+  _LED_2_GPIO_SET_ -> ODR |= 0b1 << _LED_2_GPIO_PORT_;
+  _LED_1_GPIO_SET_ -> ODR |= 0b1 << _LED_1_GPIO_PORT_;
   while (1) {
-    _LED_1_GPIO_SET_ -> ODR |=    0b1 << _LED_1_GPIO_PORT_;
     loopDelay();
-    _LED_1_GPIO_SET_ -> ODR &= ~ (0b1 << _LED_1_GPIO_PORT_);
-    loopDelay();
+    _LED_1_GPIO_SET_ -> ODR ^=    0b1 << _LED_1_GPIO_PORT_;
   }
   return 0;
 }
@@ -56,11 +55,11 @@ int main(void)
 void EXTI15_10_IRQHandler(void)
 {
   for(u32 i = 0xFFFFF; i !=0; --i); 
-  if(GPIOC -> IDR ^ (0b1 << 13)) { 
-    GPIOF -> ODR ^= (1 << 7);  
+  if(_KEY_1_GPIO_SET_ -> IDR ^ (0b1 << _KEY_1_GPIO_PORT_)) { 
+    _LED_2_GPIO_SET_ -> ODR ^= (1 << _KEY_1_GPIO_PORT_);  
   
   }
-  EXTI -> PR = 0b1 << 13;
+  EXTI -> PR = 0b1 << _KEY_1_GPIO_PORT_;
 }
 
 
