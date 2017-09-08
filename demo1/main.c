@@ -13,9 +13,7 @@ int main(void)
   // init GPIO
   // init clock
   //                        PB
-  RCC -> APB2ENR |= (1 << _LED_1_GPIO_CLK_);
-  RCC -> APB2ENR |= 1 << 6; // PE
-  RCC -> APB2ENR |= 1 << 7; // PF
+  RCC -> APB2ENR |= (1 << _LED_1_GPIO_CLK_) | (1 << _LED_2_GPIO_CLK_) | (1 << _KEY_1_GPIO_CLK_);
   RCC -> APB2ENR |= 1 << 0; // AFIO
   // clean gpio (PB0)
   _LED_1_GPIO_SET_ -> _LED_1_GPIO_CR_ &= ~ (0xF << _LED_1_GPIO_CRI_);
@@ -46,7 +44,7 @@ int main(void)
   _LED_1_GPIO_SET_ -> ODR |= 0b1 << _LED_1_GPIO_PORT_;
   while (1) {
     loopDelay();
-    _LED_1_GPIO_SET_ -> ODR ^=    0b1 << _LED_1_GPIO_PORT_;
+    _LED_1_GPIO_SET_ -> ODR ^= 0b1 << _LED_1_GPIO_PORT_;
   }
   return 0;
 }
