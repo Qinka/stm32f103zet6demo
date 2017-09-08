@@ -8,12 +8,18 @@ project (stm32f103zet6demo)
 ## language
 enable_language(C ASM)
 
+## platform
+set (CMAKE_SYSTEM_NAME Generic)
+SET(CMAKE_SYSTEM_PROCESSOR arm)
+SET(CMAKE_CROSSCOMPILING TRUE) 
+
 ## compile
 if (NOT (DEFINED "ARM_PREFIX"))
   set (ARM_PREFIX "arm-unknown-eabi-")
 endif (NOT (DEFINED "ARM_PREFIX"))
 
 set (CMAKE_C_COMPILER "${ARM_PREFIX}gcc")
+set (CMAKE_CXX_COMPILER "${ARM_PREFIX}g++")
 set (CMAKE_C_FLAGS "$ENV{CCFLAGS} -mcpu=cortex-m3 -mthumb")
 set (CMAKE_ASM_COMPILER "${ARM_PREFIX}gcc")
 
