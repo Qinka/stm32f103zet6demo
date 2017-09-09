@@ -24,9 +24,9 @@ set (CMAKE_C_FLAGS "$ENV{CCFLAGS} -mcpu=cortex-m3 -mthumb")
 set (CMAKE_ASM_COMPILER "${ARM_PREFIX}gcc")
 
 ## for platform
-if (WIN32)
+if (CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
   set (EXE_POSTFIX ".exe")
-endif(WIN32)
+endif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
 
 ## setting up the baisc file for stm32f103zet6
 ### basic path
