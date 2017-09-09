@@ -1,4 +1,9 @@
 
+## platform
+set (CMAKE_SYSTEM_NAME Generic)
+set (CMAKE_SYSTEM_PROCESSOR arm)
+set (CMAKE_CROSSCOMPILING TRUE) 
+
 ## Mini-ver for cmake
 cmake_minimum_required (VERSION 3.3)
 
@@ -7,11 +12,6 @@ project (stm32f103zet6demo)
 
 ## language
 enable_language(C ASM)
-
-## platform
-set (CMAKE_SYSTEM_NAME Generic)
-SET(CMAKE_SYSTEM_PROCESSOR arm)
-SET(CMAKE_CROSSCOMPILING TRUE) 
 
 ## compile
 if (NOT (DEFINED "ARM_PREFIX"))
