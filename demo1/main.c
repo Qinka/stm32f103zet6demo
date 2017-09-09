@@ -12,7 +12,7 @@ int main(void)
 {
   // init GPIO
   // init clock
-  //                        PB
+  //                                      
   RCC -> APB2ENR |= (1 << _LED_1_GPIO_CLK_) | (1 << _LED_2_GPIO_CLK_) | (1 << _KEY_1_GPIO_CLK_);
   RCC -> APB2ENR |= 1 << 0; // AFIO
   // clean gpio (PB0)
@@ -21,6 +21,7 @@ int main(void)
   // clean gpio (PF7)
   _LED_2_GPIO_SET_ -> _LED_2_GPIO_CR_ &= ~ (0xF << _LED_2_GPIO_CRI_);
   _LED_2_GPIO_SET_ -> _LED_2_GPIO_CR_ |= 0b0011 << _LED_2_GPIO_CRI_;
+  /*
   // clean key (PC13)  
   _KEY_1_GPIO_SET_ -> _KEY_1_GPIO_CR_ &= ~ (0xF << _KEY_1_GPIO_CRI_);
   _KEY_1_GPIO_SET_ -> _KEY_1_GPIO_CR_ |= 0b0011 << _KEY_1_GPIO_CRI_;
@@ -39,18 +40,19 @@ int main(void)
   // tmp &= 0x0f = 0b1011
   NVIC -> ISER[_KEY_1_IRQn_ / 32] |= 1 << (_KEY_1_IRQn_ % 32);
   NVIC -> IP[_KEY_1_IRQn_] |= 0b1011 << 4;
-
+  */
   _LED_2_GPIO_SET_ -> ODR |= 0b1 << _LED_2_GPIO_PORT_;
   _LED_1_GPIO_SET_ -> ODR |= 0b1 << _LED_1_GPIO_PORT_;
   while (1) {
+    _LED_1_GPIO_SET_ -> ODR &= ~(0b1 << _LED_1_GPIO_PORT_);
     loopDelay();
-    _LED_1_GPIO_SET_ -> ODR ^= 0b1 << _LED_1_GPIO_PORT_;
+    _LED_1_GPIO_SET_ -> ODR |= 0b1 << _LED_1_GPIO_PORT_;
+    loopDelay();
   }
   return 0;
 }
 
-
-void EXTI15_10_IRQHandler(void)
+void _KEY_1_IRQn_Handler_(void)
 {
   for(u32 i = 0xFFFFF; i !=0; --i); 
   if(_KEY_1_GPIO_SET_ -> IDR ^ (0b1 << _KEY_1_GPIO_PORT_)) { 
