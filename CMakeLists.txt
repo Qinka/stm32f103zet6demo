@@ -40,7 +40,7 @@ set (BASIC_INC_PATH "${BASIC_PATH}/include")
 set (CMAKE_EXE_LINKER_FLAGS " -T ${BASIC_PATH}/stm32f103ze.ld")
 
 ## macro
-add_definitions ("-D STM32F10X_HD")
+add_definitions ("-g -D STM32F10X_HD")
 
 ## include path
 include_directories (${BASIC_INC_PATH})
@@ -50,3 +50,4 @@ include(".cmake/gpio_config.cmake")
 # sub
 add_subdirectory(demo1)
 add_subdirectory(demo2)
+add_subdirectory(demo3)
