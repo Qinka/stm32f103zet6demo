@@ -179,6 +179,9 @@ void beep_unsafe (char *str)
     case 'e':
       beep_buf_set_unsafe(1); // .
       beep_buf_set_unsafe(0);
+      beep_buf_set_unsafe(0); // 2t
+      beep_buf_set_unsafe(0);
+    case 'E':
     case 'F':
     case 'f':
       beep_buf_set_unsafe(1); //.
