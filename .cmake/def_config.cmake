@@ -1,0 +1,5 @@
+macro(def_option option default)
+  if (NOT (DEFINED "${ARGV0}"))
+    set ("${ARGV0}" "${ARGV1}")
+  endif (NOT (DEFINED "${ARGV0}"))
+endmacro(def_option)
