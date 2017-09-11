@@ -3,8 +3,8 @@
 #include <string.h>
 
 static u8 beep_buf[_BEEP_BUF_SIZE_] = {0};
-volatile u8* beep_cur = 0x0;
-volatile int8_t beep_counter = 0;
+u8* beep_cur = 0x0;
+int8_t beep_counter = 0;
 
 void beep_launch(void);
 void beep_wait(void);
@@ -163,6 +163,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case 'D':
     case 'd':
       beep_buf_set_unsafe(1); // ---
@@ -175,13 +176,14 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case 'E':
     case 'e':
       beep_buf_set_unsafe(1); // .
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
-    case 'E':
+      break;
     case 'F':
     case 'f':
       beep_buf_set_unsafe(1); //.
@@ -196,6 +198,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case 'G':
     case 'g':
       beep_buf_set_unsafe(1); // ---
@@ -210,6 +213,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case 'H':
     case 'h':
       beep_buf_set_unsafe(1); //.
@@ -222,6 +226,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case 'I':
     case 'i':
       beep_buf_set_unsafe(1); //.
@@ -230,6 +235,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case 'J':
     case 'j':
       beep_buf_set_unsafe(1); //.
@@ -248,6 +254,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case 'K':
     case 'k':
       beep_buf_set_unsafe(1); // ---
@@ -262,6 +269,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case 'L':
     case 'l':
       beep_buf_set_unsafe(1); //.
@@ -276,6 +284,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case 'M':
     case 'm':
       beep_buf_set_unsafe(1); // ---
@@ -288,6 +297,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case 'N':
     case 'n':
       beep_buf_set_unsafe(1); // ---
@@ -298,6 +308,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case 'O':
     case 'o':
       beep_buf_set_unsafe(1); // ---
@@ -314,6 +325,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case 'P':
     case 'p':
       beep_buf_set_unsafe(1); //.
@@ -330,6 +342,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case 'Q':
     case 'q':
       beep_buf_set_unsafe(1); // ---
@@ -348,6 +361,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case 'R':
     case 'r':
       beep_buf_set_unsafe(1); //.
@@ -360,6 +374,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case 'S':
     case 's':
       beep_buf_set_unsafe(1); //.
@@ -370,6 +385,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case 'T':
     case 't':
       beep_buf_set_unsafe(1); // ---
@@ -378,6 +394,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case 'U':
     case 'u':
       beep_buf_set_unsafe(1); //.
@@ -390,6 +407,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case 'V':
     case 'v':
       beep_buf_set_unsafe(1); //.
@@ -406,6 +424,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case 'W':
     case 'w':
       beep_buf_set_unsafe(1); //.
@@ -420,6 +439,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case 'X':
     case 'x':
       beep_buf_set_unsafe(1); // ---
@@ -436,6 +456,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case 'Y':
     case 'y':
       beep_buf_set_unsafe(1); // ---
@@ -454,6 +475,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case 'Z':
     case 'z':
       beep_buf_set_unsafe(1); //.
@@ -470,6 +492,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case '0':
       beep_buf_set_unsafe(1); // ---
       beep_buf_set_unsafe(1);
@@ -493,6 +516,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case '1':
       beep_buf_set_unsafe(1); //.
       beep_buf_set_unsafe(0);
@@ -514,6 +538,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case '2':
       beep_buf_set_unsafe(1); //.
       beep_buf_set_unsafe(0);
@@ -533,6 +558,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case '3':
       beep_buf_set_unsafe(1); //.
       beep_buf_set_unsafe(0);
@@ -550,6 +576,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case '4':
       beep_buf_set_unsafe(1); //.
       beep_buf_set_unsafe(0);
@@ -565,6 +592,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case '5':
       beep_buf_set_unsafe(1); //.
       beep_buf_set_unsafe(0);
@@ -578,6 +606,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case '6':
       beep_buf_set_unsafe(1); // ---
       beep_buf_set_unsafe(1);
@@ -593,6 +622,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case '7':
       beep_buf_set_unsafe(1); // ---
       beep_buf_set_unsafe(1);
@@ -610,6 +640,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case '8':
       beep_buf_set_unsafe(1); // ---
       beep_buf_set_unsafe(1);
@@ -629,6 +660,7 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case '9':
       beep_buf_set_unsafe(1); // ---
       beep_buf_set_unsafe(1);
@@ -650,11 +682,13 @@ void beep_unsafe (char *str)
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0); // 2t
       beep_buf_set_unsafe(0);
+      break;
     case ' ':      
       beep_buf_set_unsafe(0); // 4t
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0);
       beep_buf_set_unsafe(0);
+      break;
     default:
       break;
     }

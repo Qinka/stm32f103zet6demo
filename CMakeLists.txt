@@ -46,6 +46,7 @@ add_definitions ("-g -D STM32F10X_HD")
 include_directories (${BASIC_INC_PATH})
 
 include(".cmake/gpio_config.cmake")
+include(".cmake/def_config.cmake")
 
 # sub
 add_subdirectory(demo1)
