@@ -32,10 +32,10 @@ endif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
 
 ## setting up the baisc file for stm32f103zet6
 ### basic path
-set (FIRMWARE_PATH "${PROJECT_SOURCE_DIR}/stm32f103zet6")
+set (FIRMWARE_PATH "${PROJECT_SOURCE_DIR}/firmware")
 ### for source
 set (FIRMWARE_SRC_PATH "${FIRMWARE_PATH}/source")
-set (FIRMWARE_SRC_FILE ${FIRMWARE_SRC_FILE} "${FIRMWARE_SRC_PATH}/core_cm3.c" "${FIRMWARE_SRC_PATH}/startup.s" "${FIRMWARE_SRC_PATH}/system_stm32f10x.c")
+set (FIRMWARE_SRC_FILE ${FIRMWARE_SRC_FILE} "${FIRMWARE_SRC_PATH}/core_cm3.c" "${FIRMWARE_SRC_PATH}/startup.s" "${FIRMWARE_SRC_PATH}/system_stm32f10x.c" "${FIRMWARE_SRC_PATH}/misc.c" )
 ### for include
 set (FIRMWARE_INC_PATH "${FIRMWARE_PATH}/include")
 ### for linker
@@ -51,3 +51,4 @@ include(".cmake/firmware.cmake")
 
 
 # sub program
+add_subdirectory(demol1)
