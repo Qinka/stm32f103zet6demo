@@ -29,7 +29,7 @@
 #define _KEY_1_GPIO_SET_  (@KEY_1_GPIO_SET@)
 #define _KEY_1_GPIO_PORT_ (@KEY_1_GPIO_PORT@)
 #define _KEY_1_GPIO_CLK_  (@KEY_1_GPIO_CLK@)
-#if KEY_1_GPIO_PORT > 7
+#if _KEY_1_GPIO_PORT_ > 7
 #define _KEY_1_GPIO_CR_ CRH
 #define _KEY_1_GPIO_CRI_ ((_KEY_1_GPIO_PORT_ - 8) * 4)
 #else

@@ -1,4 +1,4 @@
-## demo-4 for enable the GPIO
+## demo-5 for enable the GPIO
 set (DEMO_5_PATH "${PROJECT_SOURCE_DIR}/demo5")
 
 ## target

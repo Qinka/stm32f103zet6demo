@@ -1,4 +1,4 @@
-## demo-2 for enable the GPIO
+## demo-3 for enable the GPIO
 set (DEMO_3_PATH "${PROJECT_SOURCE_DIR}/demo3")
 
 ## config for beep

@@ -29,7 +29,9 @@ int main(void)
   NVIC -> IP[USART1_IRQn] |= 0b1010; // (pp << (4 - g) | ((rp & (0xf >> g))& 0xf
   USART1->DR='a';
   while((USART1->SR&0X40)==0);
-  //USART1->DR='\n';
+  USART1->DR='\n';
+  while((USART1->SR&0X40)==0);
+  USART1->DR='\r';
   while(1);
   return 0;
 }
