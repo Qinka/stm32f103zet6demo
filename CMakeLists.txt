@@ -1,0 +1,53 @@
+
+## platform
+set (CMAKE_SYSTEM_NAME Generic)
+set (CMAKE_SYSTEM_PROCESSOR arm)
+set (CMAKE_CROSSCOMPILING TRUE) 
+
+## Mini-ver for cmake
+cmake_minimum_required (VERSION 3.3)
+
+## project name
+project (stm32f103zet6demo)
+
+## language
+enable_language(C ASM)
+
+## compile
+if (NOT (DEFINED "ARM_PREFIX"))
+  set (ARM_PREFIX "arm-unknown-eabi-")
+endif (NOT (DEFINED "ARM_PREFIX"))
+
+set (CMAKE_C_COMPILER "${ARM_PREFIX}gcc")
+set (CMAKE_CXX_COMPILER "${ARM_PREFIX}g++")
+set (CMAKE_C_FLAGS "$ENV{CCFLAGS} -mcpu=cortex-m3 -mthumb")
+set (CMAKE_ASM_COMPILER "${ARM_PREFIX}gcc")
+
+## for platform
+if (CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
+  if (NOT (DEFINED "EXE_IGNORE"))
+    set (EXE_POSTFIX ".exe") 
+  endif(NOT (DEFINED "EXE_IGNORE"))
+endif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
+
+## setting up the baisc file for stm32f103zet6
+### basic path
+set (FIRMWARE_PATH "${PROJECT_SOURCE_DIR}/stm32f103zet6")
+### for source
+set (FIRMWARE_SRC_PATH "${FIRMWARE_PATH}/source")
+set (FIRMWARE_SRC_FILE ${FIRMWARE_SRC_FILE} "${FIRMWARE_SRC_PATH}/core_cm3.c" "${FIRMWARE_SRC_PATH}/startup.s" "${FIRMWARE_SRC_PATH}/system_stm32f10x.c")
+### for include
+set (FIRMWARE_INC_PATH "${FIRMWARE_PATH}/include")
+### for linker
+set (CMAKE_EXE_LINKER_FLAGS " -T ${FIRMWARE_PATH}/stm32f103ze.ld")
+
+## macro
+add_definitions (" -g -D STM32F10X_HD -D USE_STDPERIPH_DRIVER")
+
+## include path
+include_directories (${FIRMWARE_INC_PATH})
+
+include(".cmake/firmware.cmake")
+
+
+# sub program
