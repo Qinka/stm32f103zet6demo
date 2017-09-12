@@ -13,31 +13,32 @@ int main(void)
   // configure GPIOA's port(used by usart, and PA0)
   RCC -> APB2ENR |= 0b1 << 2;
   // enable USART1's clock
-  RCC -> APB2ENR |= 0b1 << 14;
+  // RCC -> APB2ENR |= 0b1 << 14;
   // configure TIM5 clock
   RCC -> APB1ENR |= 0b1 << 3;
   // setting GPIOA IO
-  GPIOA -> CRH &= 0XFFFFF00F;
-  GPIOA -> CRH |= 0X000008B0;
+  //GPIOA -> CRH &= 0XFFFFF00F;
+  //GPIOA -> CRH |= 0X000008B0;
   // reset USART1
-  RCC -> APB2RSTR |=  0b1 << 14;
-  RCC -> APB2RSTR &= ~(0b1 << 14);
+  // RCC -> APB2RSTR |=  0b1 << 14;
+  // RCC -> APB2RSTR &= ~(0b1 << 14);
   // config usart1
-  USART1 -> BRR = 0x0271; // for mantissa 0x27; faction 0x01;
-  USART1 -> CR1 |= 0x200C; // 1 bit for stop, without parity
+  //USART1 -> BRR = 0x0271; // for mantissa 0x27; faction 0x01;
+  //USART1 -> CR1 |= 0x200C; // 1 bit for stop, without parity
   // setting PA0
   GPIOA -> CRL &= ~(0xF << 0);
   GPIOA -> CRL |= 0b1000 << 0;
-  GPIOA -> ODR |= 0 << 0; // pull down
+  GPIOA -> ODR |= (0 << 0); // pull down
   // setting TIM5
   TIM5 -> ARR = 0xFFFF;
   TIM5 -> ARR = 72 - 1;
   TIM5 -> CCMR1 |= 0b1 << 0;
-  TIM5 -> CCMR1 &= ~(0b1 << 4);
-  TIM5 -> CCMR1 &= ~(0b1 << 10);
-  TIM5 -> CCER &= ~(0b1 << 1);
+  TIM5 -> CCMR1 |= (0 << 4);
+  TIM5 -> CCMR1 |= (0 << 10);
+  TIM5 -> CCER |= (0 << 1);
   TIM5 -> CCER |= 0b1 << 0;
-  TIM5 -> DIER |= 0b11 << 0;
+  TIM5 -> DIER |= 0b1 << 1;
+  TIM5 -> DIER |= 0b1 << 0;
   TIM5 -> CR1 |= 0b1 << 0;
   // init interrupt for TIM5
   // nvic (group 2, p (2,2))
@@ -49,27 +50,20 @@ int main(void)
   NVIC -> ISER[TIM5_IRQn /32] |= (0b1 << TIM5_IRQn % 32);
   NVIC -> IP[TIM5_IRQn] |= 0b1010; // (pp << (4 - g) | ((rp & (0xf >> g))& 0xf
   
-  USART1 -> DR = 'D';  
-  USART1 -> DR = '\r';  
-  USART1 -> DR = '\n'; 
+  //sUSART1 -> DR = 'D';  
+  //USART1 -> DR = '\r';  
+  //USART1 -> DR = '\n'; 
   
-  sendCharCom('D');
-  sendCharCom('\r');
-  sendCharCom('\n');
+  //sendCharCom('D');
+  //sendCharCom('\r');
+  //sendCharCom('\n');
   while(1);
   return 0;
 }
 
 void sendCharCom(u8 chr)
 {
-  while(1) {
-    u32 sr = USART1 -> SR;
-    if(!(sr & 0x40)) {
-      USART1 -> SR &= ~0x40;
-      break;
-    }
-  }
-  USART1 -> DR = chr;  
+  //USART1 -> DR = chr;  
 }
 
 void TIM5_IRQHandler(void)
