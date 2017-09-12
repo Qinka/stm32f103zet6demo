@@ -25,3 +25,7 @@ auto
 
 # for vs code
 .vscode
+
+# for mac
+.DS_Store
+
