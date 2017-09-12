@@ -25,7 +25,9 @@ set (CMAKE_ASM_COMPILER "${ARM_PREFIX}gcc")
 
 ## for platform
 if (CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
-  set (EXE_POSTFIX ".exe")
+  if (NOT (DEFINED "EXE_IGNORE"))
+    set (EXE_POSTFIX ".exe") 
+  endif(NOT (DEFINED "EXE_IGNORE"))
 endif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
 
 ## setting up the baisc file for stm32f103zet6
@@ -53,3 +55,4 @@ add_subdirectory(demo1)
 add_subdirectory(demo2)
 add_subdirectory(demo3)
 add_subdirectory(demo4)
+add_subdirectory(demo5)
