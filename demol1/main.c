@@ -71,6 +71,7 @@ int main(void)
 
 void TIM5_IRQHandler(void)
 {
+  u16 tsr = TIM5 -> SR;
   if(t_counter >= 0xFF)
     goto reset;
   if(TIM_GetITStatus(TIM5,TIM_IT_Update) != RESET) {
@@ -90,6 +91,8 @@ void TIM5_IRQHandler(void)
   return;
  reset:
   USART_SendData(USART1, t_counter);
+  while(USART_GetFlagStatus(USART1,USART_FLAG_TC)!=SET);
+  USART_SendData(USART1, '\r');
   while(USART_GetFlagStatus(USART1,USART_FLAG_TC)!=SET);
   USART_SendData(USART1, '\n');
   while(USART_GetFlagStatus(USART1,USART_FLAG_TC)!=SET);
