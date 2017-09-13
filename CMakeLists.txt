@@ -35,7 +35,7 @@ endif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
 set (BASIC_PATH "${PROJECT_SOURCE_DIR}/stm32f103zet6")
 ### for source
 set (BASIC_SRC_PATH "${BASIC_PATH}/source")
-set (BASIC_SRC_FILE ${BASIC_SRC_FILE} "${BASIC_SRC_PATH}/core_cm3.c" "${BASIC_SRC_PATH}/startup.s" "${BASIC_SRC_PATH}/system_stm32f10x.c")
+set (BASIC_SRC_FILE ${BASIC_SRC_FILE} "${BASIC_SRC_PATH}/core_cm3.c" "${BASIC_SRC_PATH}/startup.s" "${BASIC_SRC_PATH}/system_stm32f10x.c" "${BASIC_SRC_PATH}/misc.c")
 ### for include
 set (BASIC_INC_PATH "${BASIC_PATH}/include")
 ### for linker
