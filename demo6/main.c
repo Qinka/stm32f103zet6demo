@@ -7,7 +7,7 @@ int _exit(void)
 }
 void sendCharCom(u8);
 
-int16_t t_counter=-1;
+u8 t_counter=0;
 int main(void)
 {
   // serial for baud rate 115200
@@ -35,7 +35,7 @@ int main(void)
   GPIOA -> CRL &= ~(0xF << 0);
   GPIOA -> CRL |= 0b1000 << 0;
   //GPIOA -> ODR &= ~(0b1 << 0); // pull down
-  //GPIOA -> BRR |= (0b1 << 0);
+  GPIOA -> BRR |= (0b1 << 0);
   // setting TIM5
   TIM5 -> ARR = 0xFFFF;
   TIM5 -> ARR = 72 - 1;
@@ -80,12 +80,12 @@ void TIM5_IRQHandler(void)
   tsr = TIM5 -> SR;
   if(t_counter >= 0xFF)
     goto reset;
-  if(tsr & (0b1 << 0) && t_counter >=0) { // overflow
+  if(tsr & (0b1 << 0)) { // overflow
     ++ t_counter;
     goto next;
   }
   if(tsr & (0b1 << 1)) { // catched
-    if (t_counter < 0) { // first
+    if (t_counter = 0) { // first
       ++ t_counter;
       TIM5 -> CNT = 0;
       TIM5 -> CCER |= 0b1 << 1;
@@ -95,16 +95,15 @@ void TIM5_IRQHandler(void)
       goto reset;
     }
   }
-  goto next;
   return;
   // send time via usart and reset TIM5
  reset:
   sendCharCom(t_counter);
   sendCharCom('\r');
   sendCharCom('\n');
-  t_counter = -1;
+  t_counter = 0;
   TIM5 -> CCER &= ~(0b1 << 1);
   // set interrupt for next time
  next:
-  TIM5 -> SR = 0;
+  TIM5 -> SR &= ~(0b11 <<0);
 }
