@@ -1,11 +1,12 @@
 #include "stm32f10x.h"
 
-
 int _exit(void)
-{
+{ return -1;
 }
 
 u8 t_counter = 0;
+
+void puts(const char*);
 
 int main(void)
 {
@@ -60,12 +61,7 @@ int main(void)
   TIM_ITConfig(TIM5,TIM_IT_Update|TIM_IT_CC1,ENABLE);
   TIM_Cmd(TIM5,ENABLE);
   // send
-  USART_SendData(USART1, 'D');
-  while(USART_GetFlagStatus(USART1,USART_FLAG_TC)!=SET);
-  USART_SendData(USART1, '\r');
-  while(USART_GetFlagStatus(USART1,USART_FLAG_TC)!=SET);
-  USART_SendData(USART1, '\n');
-  while(USART_GetFlagStatus(USART1,USART_FLAG_TC)!=SET);
+  puts("Done...\r\n");
   while(1);
 }
 
@@ -90,15 +86,26 @@ void TIM5_IRQHandler(void)
   }
   return;
  reset:
+  //printf("%d\r\n",(int)t_counter);
+
+  while(USART_GetFlagStatus(USART1,USART_FLAG_TC)!=SET);
   USART_SendData(USART1, t_counter);
   while(USART_GetFlagStatus(USART1,USART_FLAG_TC)!=SET);
   USART_SendData(USART1, '\r');
   while(USART_GetFlagStatus(USART1,USART_FLAG_TC)!=SET);
   USART_SendData(USART1, '\n');
-  while(USART_GetFlagStatus(USART1,USART_FLAG_TC)!=SET);
+  
+
   TIM_OC1PolarityConfig(TIM5,TIM_ICPolarity_Rising);
   t_counter = 0;
  next:
   TIM_ClearITPendingBit(TIM5, TIM_IT_CC1|TIM_IT_Update);
 }
 
+void puts(const char* str)
+{
+  while(*str != '\0') {    
+  while(USART_GetFlagStatus(USART1,USART_FLAG_TC)!=SET);
+  USART_SendData(USART1, *str++);
+  }
+}
