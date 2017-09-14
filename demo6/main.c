@@ -39,6 +39,7 @@ int main(void)
   // setting TIM5
   TIM5 -> ARR = 0xFFFF;
   TIM5 -> ARR = 72 - 1;
+  TIM5 -> CCMR1 &= ~(0b11 << 0)
   TIM5 -> CCMR1 |= 0b1 << 0;
   TIM5 -> CCMR1 &= ~(0b1 << 4);
   TIM5 -> CCMR1 &= (0b1 << 10);
