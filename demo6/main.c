@@ -13,7 +13,6 @@ int main(void)
   // serial for baud rate 115200
   // configure GPIOA's port(used by usart, and PA0)
   RCC -> APB2ENR |= 0b1 << 2;
-  RCC -> APB2ENR |= 0b1 << 14;
   
   // setting GPIOA IO
   GPIOA -> CRH &= 0XFFFFF00F;
@@ -34,18 +33,18 @@ int main(void)
   // setting PA0
   GPIOA -> CRL &= ~(0xF << 0);
   GPIOA -> CRL |= 0b1000 << 0;
-  //GPIOA -> ODR &= ~(0b1 << 0); // pull down
-  GPIOA -> BRR |= (0b1 << 0);
+  //GPIOA -> ODR |= 0b1 << 0; // pull down
+  //GPIOA -> BRR |= (0b1 << 0);
   // setting TIM5
+  TIM5 -> EGR |= 0b1 << 0;
   TIM5 -> ARR = 0xFFFF;
-  TIM5 -> ARR = 72 - 1;
-  TIM5 -> CCMR1 &= ~(0b11 << 0)
+  TIM5 -> PSC = 72 - 1;
+  TIM5 -> CCMR1 &= ~(0xFF) << 0;
   TIM5 -> CCMR1 |= 0b1 << 0;
-  TIM5 -> CCMR1 &= ~(0b1 << 4);
-  TIM5 -> CCMR1 &= (0b1 << 2);
-  TIM5 -> CCER &= ~(0b1 << 1);
+  TIM5 -> CCER &= ~(0b11 << 0);
   TIM5 -> CCER |= 0b1 << 0;
-  TIM5 -> DIER |= 0b11 << 0;
+  TIM5 -> DIER |= 0b1 << 1;
+  TIM5 -> DIER |= 0b1 << 0;
   TIM5 -> CR1 |= 0b1 << 0;
   // init interrupt for TIM5
   // nvic (group 2, p (2,2))
@@ -58,7 +57,6 @@ int main(void)
   NVIC_Init(&NVIC_InitStructure);  
 
   
-  GPIOB -> ODR &= ~(0b1 << 5);
   USART1 -> DR = 'D';  
   USART1 -> DR = '\r';  
   USART1 -> DR = '\n'; 
@@ -76,18 +74,25 @@ void sendCharCom(u8 chr)
   USART1 -> DR = chr;
 }
 
+void sendCharHex(u8 chr)
+{
+  
+}
+		      
+
+
 void TIM5_IRQHandler(void)
 {
   u16 tsr ;
   tsr = TIM5 -> SR;
   if(t_counter >= 0xFF)
     goto reset;
-  if(tsr & (0b1 << 0)) { // overflow
+  if(tsr & (0b1 << 0) && t_counter) { // overflow
     ++ t_counter;
     goto next;
   }
   if(tsr & (0b1 << 1)) { // catched
-    if (t_counter = 0) { // first
+    if (t_counter == 0) { // first
       ++ t_counter;
       TIM5 -> CNT = 0;
       TIM5 -> CCER |= 0b1 << 1;
