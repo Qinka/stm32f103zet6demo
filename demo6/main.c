@@ -9,11 +9,11 @@ void sendChar(u8);
 void semdStr(const u8*);
 
 // for trans
-int8_t t_counter=-2;
-u32 code_buf;
-const u8* code = &code_buf;
-u8 bit_counter=32;
-
+u8 RmtSta=0;
+u16 Dval; // failling counter
+u32 RmtRec=0; // data
+const u8* RmtRecA = &RmtRec;
+u8 RmtCnt=0; //pass
 
 
 int main(void)
@@ -79,80 +79,58 @@ void sendStr(const u8 * str)
     sendChar(*str++);
 }
 
-
 void TIM4_IRQHandler(void)
 {
-  u16 tsr ;
-  tsr = TIM4 -> SR;
-  if(tsr & 0b1) { //  overflow
-    if(bit_counter == 32) { // sync-signal
-      ++ t_counter;
-      if(t_counter > 9) { // reset
-	bit_counter = 32;
-	t_counter = -2;	
-	TIM4 -> CCER |= 0b1 << 13; // to failling
+  u16 tsr;
+  tsr=TIM4->SR;
+  if(tsr&0X01) { // overflow
+    if(RmtSta&0x80) {
+      RmtSta&=~0X10;
+      if((RmtSta&0X0F)==0X00)
+	RmtSta|=1<<6;
+      if((RmtSta&0X0F)<14)
+	RmtSta++;
+      else {
+	RmtSta&=~(1<<7);
+	RmtSta&=0XF0;
+	sendChar(RmtRecA[0]);
+	sendChar(RmtRecA[1]);
+	sendChar(RmtRecA[2]);
+	sendChar(RmtRecA[3]);
       }
     }
-    else if(t_counter < 1) // rx for logist 1
-      ++t_counter;
-    else { // reset
-      t_counter = -2;
-      bit_counter = 32;
-      TIM4 -> CCER |= 0b1 << 13; // to failling
+  }	
+  if(tsr&(1<<4)) { // cc41e interrupt
+    if(RDATA) { // rising
+      TIM4->CCER|=1<<13;
+      TIM4->CNT=0;
+      RmtSta|=0X10;
     }
-  }
-  else if(tsr & 0b10000) { // failling or rising
-    if (bit_counter == 32) {// sync-signal
-      if(t_counter == 0) { // failling
-	++ t_counter;
-	TIM4 -> CCER &= ~(0b1 << 13); // to rising
-      }
-      else if(t_counter == 7) { // checked rising
-	-- bit_counter;
-	t_counter = -2;
-      }
-      else { // reset
-	bit_counter = 32;
-	t_counter = -2;
-	TIM4 -> CCER |= 0b1 << 13; // to failling
-      }
-    }
-    else if (bit_counter < 32 && bit_counter >=0) {// rx
-      if(t_counter == -2) { // wave (failling)
-	++ t_counter;
-	TIM4 -> CCER &= ~(0b1 << 13); // to rising
-      }
-      else if(t_counter == -1) { // wave (rising)
-	++ t_counter;
-	TIM4 -> CCER |= 0b1 << 13; // to failling
-      }	
-      else if(t_counter < 2) { // failling
-	code_buf &= ~(0b1 << bit_counter);
-	code_buf |= (t_counter & 0b1) << bit_counter;
-	TIM4 -> CCER &= ~(0b1 << 13); // to rising
-	if(bit_counter == 0) { // final
-	  if(code[0] == ~code[1] && code [2] == ~code[3]) { // right
-	    sendChar(code[0]);
-	    sendChar(code[1]);
-	    sendChar(code[2]);
-	    sendChar(code[3]);
+    else { // failling
+      Dval=TIM4->CCR4;
+      TIM4->CCER&=~(1<<13);
+      if(RmtSta&0X10) {
+	if(RmtSta&0X80) { // catch guidance code
+	  if(Dval>300&&Dval<800) {
+	    RmtRec<<=1;
+	    RmtRec|=0;
 	  }
-	  else { // reset
-	    bit_counter = 32;
-	    t_counter = -2;
-	    TIM4 -> CCER |= 0b1 << 13; // to failling
+	  else if(Dval>1400&&Dval<1800) { // standard is 1680(us)
+	    RmtRec<<=1; // left-shift
+	    RmtRec|=1; // catch 1
+	  }
+	  else if(Dval>2200&&Dval<2600) { // key for 2500(us)
+	    RmtCnt++; // ++
+	    RmtSta&=0XF0; //clean
 	  }
 	}
-	else {
-	  -- bit_counter;
-	  t_counter = -2;
-	}
-      }
-      else { // reset
-	bit_counter = 32;
-	t_counter = -2;
-	TIM4 -> CCER |= 0b1 << 13; // to failling
       }
     }
+    else if(Dval > 4200&&Dval<4700) { // standard for 4500(us)
+      RmtSta|=1<<7;
+      RmtCnt=0;
+      RmtSta&=~(1<<4);
+    }
   }
+  TIM4->SR=0; //clean
 }
