@@ -6,7 +6,8 @@ int _exit(void)
   return 0;
 }
 void sendChar(u8);
-void semdStr(const u8*);
+void sendStr(const u8*);
+void sendHex(u8);
 
 // for trans
 u8 RmtSta=0;
@@ -43,7 +44,7 @@ int main(void)
   // configure TIM4 clock
   RCC -> APB1ENR |= 0b1 << 2;
   // setting TIM4
-  TIM4 -> ARR = 999;
+  TIM4 -> ARR = 10000;
   TIM4 -> PSC = 72 - 1;
   TIM4 -> CCMR2 &= ~(0xFF) << 8;
   TIM4 -> CCMR2 |= 0b1 << 8;
@@ -61,9 +62,19 @@ int main(void)
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);  
 
-
+  u32 oldR = RmtRec + 1;
   sendStr("Done...\r\n");  
-  while(1);
+  while(1) {
+    if(oldR != RmtRec) {
+      sendStr("current: ");
+      sendHex(RmtRecA[0]);
+      sendHex(RmtRecA[1]);
+      sendHex(RmtRecA[2]);
+      sendHex(RmtRecA[3]);
+      sendChar('\r');
+      oldR = RmtRec;
+    }
+  }
   return 0;
 }
 
@@ -71,6 +82,18 @@ void sendChar(u8 chr)
 {
   while((USART1 -> SR & 0x40) == 0);
   USART1 -> DR = chr;
+}
+
+void sendHex(u8 chr) {
+  char low,high;
+  low = (chr & 0x0F) + '0';
+  high = ((chr >> 4) & 0x0F) + '0';
+  if (low > '9')
+    low += 7;
+  if (high > '9')
+    high += 7;
+  sendChar(high);
+  sendChar(low);
 }
 
 void sendStr(const u8 * str)
@@ -93,15 +116,11 @@ void TIM4_IRQHandler(void)
       else {
 	RmtSta&=~(1<<7);
 	RmtSta&=0XF0;
-	sendChar(RmtRecA[0]);
-	sendChar(RmtRecA[1]);
-	sendChar(RmtRecA[2]);
-	sendChar(RmtRecA[3]);
       }
     }
   }	
   if(tsr&(1<<4)) { // cc41e interrupt
-    if(RDATA) { // rising
+    if(GPIOB -> IDR & (0b1 << 9)) { // rising
       TIM4->CCER|=1<<13;
       TIM4->CNT=0;
       RmtSta|=0X10;
@@ -124,11 +143,11 @@ void TIM4_IRQHandler(void)
 	    RmtSta&=0XF0; //clean
 	  }
 	}
+	else if(Dval > 4200&&Dval<4700) { // standard for 4500(us)
+	  RmtSta|=1<<7;
+	  RmtCnt=0;
+	}
       }
-    }
-    else if(Dval > 4200&&Dval<4700) { // standard for 4500(us)
-      RmtSta|=1<<7;
-      RmtCnt=0;
       RmtSta&=~(1<<4);
     }
   }
