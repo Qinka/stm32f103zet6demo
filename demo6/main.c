@@ -41,13 +41,14 @@ int main(void)
   TIM5 -> ARR = 72 - 1;
   TIM5 -> CCMR1 |= 0b1 << 0;
   TIM5 -> CCMR1 &= ~(0b1 << 4);
-  TIM5 -> CCMR1 &= (0b1 << 10);
+  TIM5 -> CCMR1 &= (0b1 << 2);
   TIM5 -> CCER &= ~(0b1 << 1);
   TIM5 -> CCER |= 0b1 << 0;
   TIM5 -> DIER |= 0b11 << 0;
   TIM5 -> CR1 |= 0b1 << 0;
   // init interrupt for TIM5
   // nvic (group 2, p (2,2))
+  NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
   NVIC_InitTypeDef NVIC_InitStructure;
   NVIC_InitStructure.NVIC_IRQChannel = TIM5_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
