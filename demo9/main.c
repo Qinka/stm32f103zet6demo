@@ -227,12 +227,19 @@ void TIM2_IRQHandler(void) {
       }
     }
     else { // stop send
-      TransCounter = 33;
-      GPIOA -> ODR |= 0b1 << 2;
-      TIM2 -> CR1 &= ~(0b1 << 0);
-      TIM2 -> CNT = 0;
-      TIM2 -> ARR = 10;
-      TransBlock = false;
+      if(GPIOA -> ODR & 0x4) { // to low
+        GPIOA -> ODR &= ~(0b1 << 2);
+        TIM2 -> CNT = 0;
+        TIM2 -> ARR = 559; // 559
+      }
+      else { // to high
+        TransCounter = 33;
+        GPIOA -> ODR |= 0b1 << 2;
+        TIM2 -> CR1 &= ~(0b1 << 0);
+        TIM2 -> CNT = 0;
+        TIM2 -> ARR = 10;
+        TransBlock = false;
+      }
     }
   }
   TIM2 -> SR &= ~(0b1 << 0);
