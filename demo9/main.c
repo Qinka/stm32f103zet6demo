@@ -19,6 +19,7 @@ u32 RmtRec = 0;
 const u8* RmtRecA = &RmtRec;
 
 u8 RmtCnt = 0;
+u8 RmtBit = 32;
 
 u32 TransBuf;
 u8 TransCounter = 33;
@@ -90,13 +91,15 @@ int main(void) {
 
   u32 oldR = RmtRec + 1;
 
+  //while(1) sendNEC('A','B');
+
   while(1) {
     u16 uRecv = 0;
     u16 nRecv = 0;
     // send received char from usart1
     uRecv = recvChar(false);
     if(uRecv & 0xFF00)
-      sendNEC(0x0,uRecv & 0xFF);
+      sendNEC(uRecv & 0xFF,uRecv & 0xFF);
     // display received data (from NEC)
     nRecv = recvNEC(false);
     if(nRecv & 0xFF00)
@@ -172,11 +175,11 @@ void TIM3_IRQHandler(void) {
         if(RmtSta&0X80) { // catch guidance code
           if(Dval>300&&Dval<800) {
             RmtRec<<=1;
-            RmtRec|=0;
+            RmtRec &= ~0b1;
           }
           else if(Dval>1400&&Dval<1800) { // standard is 1680(us)
             RmtRec<<=1; // left-shift
-            RmtRec|=1; // catch 1
+            RmtRec |= 0b1; // catch 1
           }
           else if(Dval>2200&&Dval<2600) { // key for 2500(us)
             RmtCnt++; // ++
@@ -201,7 +204,8 @@ void TIM2_IRQHandler(void) {
     if (TransCounter == 33) { // low level 9ms
       GPIOA -> ODR &= ~(0b1 << 2);
       TIM2 -> CNT = 0;
-      TIM2 -> ARR = 8999; // 9000
+      TIM2 -> ARR = 4499; // 4500
+      //TIM2 -> ARR = 8999; // 9000
       -- TransCounter;
     }
     else if(TransCounter == 32) { // high level 4.5ms
@@ -259,12 +263,14 @@ void sendNEC(u8 addr,u8 data) {
 }
 
 u16 recvNEC(bool is) {
-  while(is && RmtCnt == 0);
+  while(is && RmtSta&(1<<6));
   u16 recv = 0;
-  if(RmtCnt) {
+  if(RmtSta&(1<<6)) {
     recv |= RmtRec & 0xFF;
     recv |= 0b1 << 8;
   }
+  RmtSta &= ~(0b1 << 6);
+  //RmtRec = 0;
   RmtCnt = 0;
   return recv;
 }

@@ -4,6 +4,10 @@ int _exit(void)
 {
   return 0;
 }
+
+void sendChar(u8);
+void sendStr(const u8*);
+
 int main(void)
 {
   // serial for baud rate 115200
@@ -32,6 +36,7 @@ int main(void)
   USART1->DR='\n';
   while((USART1->SR&0X40)==0);
   USART1->DR='\r';
+  sendStr("\033[31mHello World\033[0m");
   while(1);
   return 0;
 }
@@ -44,5 +49,18 @@ void USART1_IRQHandler(void)
     dr = USART1 -> DR;
     ++ dr;
     USART1 -> DR = dr;
+  }
+}
+
+
+void sendChar(u8 chr) {
+  while((USART1->SR&0X40)==0);
+  USART1->DR=chr;
+}
+
+void sendStr(const u8* str) {
+  while(*str) {
+    while((USART1->SR&0X40)==0);
+    USART1->DR=*str++;
   }
 }
