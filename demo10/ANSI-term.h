@@ -44,7 +44,7 @@
 #define CLEAN_SCN(x) ANSI_PREFIX x "J"
 #define ERASE_LINE(x) ANSI_PREFIX x "K"
 #define HIDE_CUR ANSI_PREFIX "?25l"
-#define HIDE_CUR ANSI_PREFIX "?25h"
+#define SHOW_CUR ANSI_PREFIX "?25h"
 
 
 #endif // _ANSI_TERMINAL_
