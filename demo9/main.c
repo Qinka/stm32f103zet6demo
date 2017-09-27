@@ -230,6 +230,19 @@ void TIM2_IRQHandler(void) {
         -- TransCounter;
       }
     }
+    else if (TransCounter == 255) { // send repeat
+      if(GPIOA -> ODR & 0x4) { // to low
+        GPIOA -> ODR &= ~(0b1 << 2);
+        TIM2 -> CNT = 0;
+        TIM2 -> ARR =  559;
+      }
+      else { // to high
+        GPIOA -> ODR |= 0b1 << 2;
+        TIM2 -> CNT = 0;
+        TIM2 -> ARR = 2499; // 2499+1
+        -- TransCounter;
+      }
+    }
     else { // stop send
       if(GPIOA -> ODR & 0x4) { // to low
         GPIOA -> ODR &= ~(0b1 << 2);
@@ -251,6 +264,7 @@ void TIM2_IRQHandler(void) {
 
 void sendNEC(u8 addr,u8 data) {
   while(TransBlock);
+  TransBlock = true;
   TransCounter = 33;
   TransBuf =0;
   TransBuf |= addr << 24;
@@ -259,13 +273,12 @@ void sendNEC(u8 addr,u8 data) {
   TransBuf |= (~data & 0xFF) << 0;
   TIM2 -> CNT = 0;
   TIM2 -> CR1 |= 0b1 << 0;
-  TransBlock = true;
 }
 
 u16 recvNEC(bool is) {
-  while(is && RmtSta&(1<<6));
+  while(is && RmtCnt == 0);
   u16 recv = 0;
-  if(RmtSta&(1<<6)) {
+  if(RmtCnt > 0) {
     recv |= RmtRec & 0xFF;
     recv |= 0b1 << 8;
   }
