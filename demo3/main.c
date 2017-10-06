@@ -27,7 +27,7 @@ int main(void)
   // init Timer 3(TIM3)
   RCC -> APB1ENR |= 0b1 << 1;
   TIM3 -> PSC = 7199; // 7.2K for 72MHz => 10KHz (1/10 ms)
-  TIM3 -> ARR =  999; // 1K for 100ms
+  TIM3 -> ARR = _MORSE_SPEED_;
   TIM3 -> CR1  &= ~(0b1 << 0);
   TIM3 -> CR1 &= ~(0b1 << 0);
   // init for nvic (group 2, p (2,2))
@@ -57,7 +57,7 @@ int main(void)
   beep_buf[15] = 0b11110101;
   beep_buf[16] = 0b00000000;
   beep_launch();  */
-  beep_unsafe("sos");
+  beep_unsafe(_DONE_BEEP_STR_);
   while(1);
   return 0;
 }

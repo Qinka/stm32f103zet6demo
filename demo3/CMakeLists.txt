@@ -7,6 +7,14 @@ if (NOT (DEFINED "BEEP_BUF_SIZE"))
   set (BEEP_BUF_SIZE 64)
 endif (NOT (DEFINED "BEEP_BUF_SIZE"))
 
+if (NOT (DEFINED "MORSE_SPEED"))
+  set ("MORSE_SPEED" "999")
+endif (NOT (DEFINED "MORSE_SPEED"))
+
+if (NOT (DEFINED "DONE_BEEP_STR"))
+  set ("DONE_BEEP_STR" "\"Done\"")
+endif (NOT (DEFINED "DONE_BEEP_STR"))
+
 ## configure file
 configure_file (
   "${DEMO_3_PATH}/config.h.in"

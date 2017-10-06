@@ -15,4 +15,8 @@
 #define _BEEP_GPIO_CRI_ ((_BEEP_GPIO_PORT_)     * 4)
 #endif
 #define _BEEP_BUF_SIZE_ (@BEEP_BUF_SIZE@)
+
+#define _DONE_BEEP_STR_ (@DONE_BEEP_STR@)
+#define _MORSE_SPEED_ (@MORSE_SPEED@)
+
 #endif // _CONFIG_H_
