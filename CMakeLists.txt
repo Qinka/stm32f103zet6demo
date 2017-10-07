@@ -52,3 +52,4 @@ include(".cmake/firmware.cmake")
 
 # sub program
 add_subdirectory(demol1)
+add_subdirectory(or-demo)
