@@ -64,5 +64,5 @@ void OLED_x16Str(unsigned char x, unsigned char y, unsigned char ch[]); // 8 x 1
 void OLED_16x16CN(unsigned char x, unsigned char y, unsigned char N); // 16 x 16 str
 void OLED_BMP(unsigned char x0, unsigned char y0, unsigned char x1,
              unsigned char y1, unsigned char BMP[]); // display bmp
-
+void OLED_6x8Hex(unsigned char x, unsigned char y, unsigned char d);
 #endif // _OLED_H_

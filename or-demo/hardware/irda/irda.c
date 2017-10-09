@@ -103,5 +103,6 @@ void IRDA_IRQHandler(void) {
  */
 u32 getCode(void) {
   while(RmtSta ^ (0b1 << 6));
+  RmtSta ^= (0b1 << 6);
   return RmtRec;
 }
