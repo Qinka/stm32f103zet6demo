@@ -30,26 +30,31 @@ if (CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
   endif(NOT (DEFINED "EXE_IGNORE"))
 endif(CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
 
-## setting up the baisc file for stm32f103zet6
-### basic path
-set (FIRMWARE_PATH "${PROJECT_SOURCE_DIR}/firmware")
-### for source
-set (FIRMWARE_SRC_PATH "${FIRMWARE_PATH}/source")
-set (FIRMWARE_SRC_FILE ${FIRMWARE_SRC_FILE} "${FIRMWARE_SRC_PATH}/core_cm3.c" "${FIRMWARE_SRC_PATH}/startup.s" "${FIRMWARE_SRC_PATH}/system_stm32f10x.c" "${FIRMWARE_SRC_PATH}/misc.c" )
+# use aiko and firmware
+set(
+  LIBRARY_A
+  " -laiko -lstm32f10x -L${PROJECT_BINARY_DIR}/root/lib"
+)
+
+
 ### for include
 set (FIRMWARE_INC_PATH "${FIRMWARE_PATH}/include")
 ### for linker
-set (CMAKE_EXE_LINKER_FLAGS " -T ${FIRMWARE_PATH}/stm32f103ze.ld")
+set (
+  CMAKE_EXE_LINKER_FLAGS
+  " -T ${PROJECT_BINARY_DIR}/root/share/aiko/aiko.ld -nostdlib ${LIBRARY_A}" 
+  )
+
 
 ## macro
 add_definitions (" -g -D STM32F10X_HD -D USE_STDPERIPH_DRIVER")
 
 ## include path
-include_directories (${FIRMWARE_INC_PATH})
+include_directories(${PROJECT_BINARY_DIR}/root/include)
 
-include(".cmake/firmware.cmake")
 
 
 # sub program
-add_subdirectory(demol1)
-add_subdirectory(or-demo)
+add_subdirectory(aiko-demo)
+#add_subdirectory(demol1)
+#add_subdirectory(or-demo)
