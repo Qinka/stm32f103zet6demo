@@ -51,7 +51,8 @@ add_definitions (" -g -D STM32F10X_HD -D USE_STDPERIPH_DRIVER")
 
 ## include path
 include_directories(${PROJECT_BINARY_DIR}/root/include)
-
+## library path
+link_directories(${PROJECT_BINARY_DIR}/root/lib)
 
 
 # sub program
