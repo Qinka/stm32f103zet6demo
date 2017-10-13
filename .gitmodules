@@ -1,0 +1,6 @@
+[submodule "aiko-stm32f10x-firmware"]
+	path = aiko-stm32f10x-firmware
+	url = https://github.com/Qinka/aiko-stm32f10x-firmware.git
+[submodule "aiko"]
+	path = aiko
+	url = https://github.com/Qinka/aiko.git
