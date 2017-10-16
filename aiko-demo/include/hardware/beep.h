@@ -3,13 +3,18 @@
  * header
  */
 
- #ifndef _BEEP_H_
- #define _BEEP_H_
- 
- void beep_config(void);
+#ifndef _BEEP_H_
+#define _BEEP_H_
 
- void beep_on(void);
- void beep_off(void);
+#ifdef _BEEP_C_
+// ports and pins
+#define _BEEP_PORT_   GPIOC
+#define _BEEP_PIN_    GPIO_Pin_0
+#define _BEEP_CLK_    RCC_APB2Periph_GPIOC
+#endif // _BEEP_C_
 
- 
- #endif // !_BEEP_H_
+// function
+void beep_init(void);
+void beep_on(void);
+void beep_off(void);
+#endif // !_BEEP_H_
