@@ -20,9 +20,9 @@ void beep_init(void) {
 }
 
 void beep_off(void) {
-  GPIO_ResetBits(GPIOC,GPIO_Pin_0);
+  GPIO_ResetBits(_BEEP_PORT_,GPIO_Pin_0);
 }
 
 void beep_on(void) {
-  GPIO_SetBits(GPIOC,GPIO_Pin_0);
+  GPIO_SetBits(_BEEP_PORT_,GPIO_Pin_0);
 }
