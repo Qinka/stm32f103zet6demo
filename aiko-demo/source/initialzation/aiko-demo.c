@@ -23,7 +23,7 @@ void job_initialization_f(struct job_t* j) {
 }
 
 void sys_initialization_f(struct job_t* j) {
-  beep_config();
+  beep_init();
   beep_on();
   return;
 }
