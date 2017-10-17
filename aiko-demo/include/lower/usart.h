@@ -17,17 +17,18 @@
 // types
 typedef void (*usart_clk_f)(uint32_t,FunctionalState);
 struct usart_lower_init_t {
-  GPIO_TypeDef* USART_reg;      // register
-  uint32_t      USART_baudrate; // baud rate
-  uint32_t      USART_clk;      // USART's clock
-  usart_clk_f   USART_clk_fun;   // init clock's function
+  USART_TypeDef* USART_reg;      // register
+  uint32_t       USART_baudrate; // baud rate
+  uint32_t       USART_clk;      // USART's clock
+  usart_clk_f    USART_clk_fun;  // init clock's function
 };
 struct usart_lower_nvic_t {
-  GPIO_TypeDef* USART_NVIC_reg;    // register
-  uint8_t       USART_NIIC_irq;    // IRQ
-  uint8_t       USART_NIVC_pp;     // preemption priority
-  uint8_t       USART_NVIC_sp;     // sub priority
-  uint16_t      USART_NVIC_it;     // IT bits
+  USART_TypeDef* USART_NVIC_reg;    // register
+  uint8_t        USART_NVIC_irq;    // IRQ
+  uint8_t        USART_NVIC_pp;     // preemption priority
+  uint8_t        USART_NVIC_sp;     // sub priority
+  uint8_t        USART_NVIC_it_tc;     // IT bits
+  uint8_t        USART_NVIC_it_rxne;     // IT bits
 };
 struct usart_gpio_init_t {
   GPIO_TypeDef* USART_GPIO_reg; // register
@@ -40,7 +41,8 @@ struct usart_dma_init_t {
   DMA_Channel_TypeDef* USART_DMA_tx_channel; // channel for DMA
   DMA_Channel_TypeDef* USART_DMA_rx_channel; // channel for DMA
   USART_TypeDef* USART_DMA_reg; // register
-  uint32_t      USART_DMA_MAR;            // memory address
+  uint32_t      USART_DMA_MAR_TX;            // memory address (TX)
+  uint32_t      USART_DMA_MAR_RX;            // memory address (RX)
   uint32_t      USART_DMA_clk;            // DMA's clock
   usart_clk_f   USART_DMA_clk_fun;         // init clock's function
 };
@@ -49,7 +51,7 @@ struct usart_dma_nvic_init_t {
   DMA_Channel_TypeDef* USART_DMA_NVIC_rx; // USART' DMA' rx channel
   uint8_t  USART_DMA_NVIC_tx_irq;   // USART's DMA's NVIC's TX IRQ
   uint8_t  USART_DMA_NVIC_rx_irq;   // USART's DMA's NVIC's RX IRQ
-  uint8_t  USART_DMA_NIVC_pp;     // preemption priority
+  uint8_t  USART_DMA_NVIC_pp;     // preemption priority
   uint8_t  USART_DMA_NVIC_sp;     // sub priority
 };
 //functions
