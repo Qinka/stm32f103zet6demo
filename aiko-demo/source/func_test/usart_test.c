@@ -10,11 +10,8 @@ char tx_buf;
 char rx_buf;
 char dma_tx_buf[USART_TEST_TX_BUG_SIZE];
 char dma_rx_buf[USART_TEST_RX_BUG_SIZE];
-char status = 0;
-
-void usart_test_enable_dma_rx_f(struct job_t*);
-void usart_test_send_length_f(struct job_t*);
-void usart_test_enable_dma_tx_f(struct job_t*);
+struct job_t usart_test_send_new_j;
+void usart_test_send_new_f(struct job_t*);
 
 
 void usart_test_init() {
@@ -30,7 +27,7 @@ void usart_test_init() {
     .USART_NVIC_pp = USART_TEST_PP,
     .USART_NVIC_sp = USART_TEST_SP,
     .USART_NVIC_it_tc = 1,
-    .USART_NVIC_it_rxne = 1,
+    .USART_NVIC_it_idle = 1,
   };
   struct usart_gpio_init_t ugi_s = {
     .USART_GPIO_reg = USART_TEST_PORT,
@@ -65,90 +62,46 @@ void usart_test_init() {
 }
 
 
-struct job_t usart_test_enable_dma_rx_j = {
-  .job_method = usart_test_enable_dma_rx_f,
+struct job_t usart_test_send_new_j = {
+  .job_method = usart_test_send_new_f,
   .job_data_p = 0,
   .job_data_s = 0,
   .next_job_p = 0
 };
 
-struct job_t usart_test_send_length_j = {
-  .job_method = usart_test_send_length_f,
-  .job_data_p = 0,
-  .job_data_s = 0,
-  .next_job_p = 0
-};
-
-struct job_t usart_test_enable_dma_tx_j = {
-  .job_method = usart_test_enable_dma_tx_f,
-  .job_data_p = 0,
-  .job_data_s = 0,
-  .next_job_p = 0
-};
-
-void usart_test_enable_dma_rx_f(struct job_t* j) {
-  uint16_t length = rx_buf - '0';
-  USART_DMACmd(USART_TEST_USART,USART_TEST_RX_CH,DISABLE);
+void usart_test_send_new_f(struct job_t* j) {
   DMA_Cmd(USART_TEST_RX_CH,DISABLE);
-  DMA_SetCurrDataCounter(USART_TEST_RX_CH,length);usart_test_send_length_j.job_data_p = (uint32_t)length;
-  usart_test_enable_dma_tx_j.job_data_p = (uint32_t)length;
-  USART_DMACmd(USART_TEST_USART,USART_TEST_RX_CH,ENABLE);
-  DMA_Cmd(USART_TEST_RX_CH,ENABLE);
-}
-
-void usart_test_send_length_f(struct job_t* j) {
-  char len = (char)(j -> job_data_p);
-  for (int i = 0; i < len; i++)
+  uint16_t len = USART_TEST_RX_BUG_SIZE - DMA_GetCurrDataCounter(USART_TEST_RX_CH);
+  for(uint16_t i = 0; i < len; ++i)
     dma_tx_buf[i] = dma_rx_buf[i] + 1;
-  USART_TEST_USART -> DR = len;
-}
-
-void usart_test_enable_dma_tx_f(struct job_t* j) {
-  uint16_t length = (uint16_t)(j -> job_data_p);
-  USART_DMACmd(USART_TEST_USART,USART_TEST_TX_CH,DISABLE);
   DMA_Cmd(USART_TEST_TX_CH,DISABLE);
-  DMA_SetCurrDataCounter(USART_TEST_TX_CH,length);
-  USART_DMACmd(USART_TEST_USART,USART_TEST_RX_CH,ENABLE);
+  DMA_SetCurrDataCounter(USART_TEST_TX_CH,len);
+  DMA_Cmd(USART_TEST_TX_CH,ENABLE);
+  DMA_ClearFlag(USART_RX_DMA_FG);
+  DMA_SetCurrDataCounter(USART_TEST_RX_CH,USART_TEST_RX_BUG_SIZE);
   DMA_Cmd(USART_TEST_RX_CH,ENABLE);
 }
 
 void USART_TEST_USART_IRQHandler(void) {
-  if (USART_GetITStatus(USART_TEST_USART,USART_IT_TC) != RESET) {
-    // send finish
-    if (status == 2) {
-      job_add(&usart_test_enable_dma_tx_j);
-      status ++;
-    }
-    USART_ClearITPendingBit(USART_TEST_USART,USART_IT_TC);
+  if(USART_GetITStatus(USART_TEST_USART,USART_IT_IDLE) != RESET) {
+    job_add(&usart_test_send_new_j);
+    uint32_t tmp;
+    tmp = USART_TEST_USART -> SR;
+    tmp = USART_TEST_USART -> DR;
   }
-  else if (USART_GetITStatus(USART_TEST_USART,USART_IT_RXNE) != RESET) {
-    // read finish
-    if (status == 0) {
-      rx_buf = USART_ReceiveData(USART_TEST_USART);
-      job_add(&usart_test_enable_dma_rx_j);
-      status ++;
-    }
-    USART_ClearITPendingBit(USART_TEST_USART,USART_IT_RXNE);
-  }
-  //else asm("bkpt");
+  USART_ClearITPendingBit(USART_TEST_USART,USART_IT_TC);
+  USART_ClearITPendingBit(USART_TEST_USART,USART_IT_IDLE);
 }
 
 void USART_TEST_DMA_RX_IRQHandler(void) {
-  if(DMA_GetITStatus(USART_RX_DMA_IT) != RESET) {
-    if (status == 1) {
-      USART_DMACmd(USART_TEST_USART,USART_TEST_RX_CH,DISABLE);
-      DMA_Cmd(USART_TEST_RX_CH,DISABLE);
-      job_add(&usart_test_send_length_j);
-      status ++;
-    }
-    DMA_ClearITPendingBit(USART_TEST_RX_CH);
-  }
+  DMA_ClearITPendingBit(USART_RX_DMA_IT);
+  DMA_Cmd(USART_TEST_RX_CH, DISABLE);
+  DMA_SetCurrDataCounter(USART_TEST_RX_CH,USART_TEST_RX_BUG_SIZE);
+  DMA_Cmd(USART_TEST_RX_CH, ENABLE);
 }
 
-void USART_TEST_DMA_TX_IRQHandler(void) {
-  if(DMA_GetITStatus(USART_TX_DMA_IT) != RESET)
-    if(status == 3) {
-      DMA_ClearITPendingBit(USART_TEST_TX_CH);
-      status = 0;
-    }
+void USART_TEST_DMA_TX_IRQHandler(void)
+{
+  DMA_ClearITPendingBit(USART_TX_DMA_IT);
+  DMA_Cmd(USART_TEST_TX_CH, DISABLE);
 }

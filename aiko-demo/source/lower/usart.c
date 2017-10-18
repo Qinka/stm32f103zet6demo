@@ -22,13 +22,14 @@ void usart_init(struct usart_lower_init_t uli) {
     .USART_StopBits = USART_StopBits_1
   };
   USART_Init(uli.USART_reg,&USART_init_s);
+  USART_ClearFlag(uli.USART_reg,USART_FLAG_TC);
 }
 
 void usart_nvic_init(struct usart_lower_nvic_t uln) {
   if(uln.USART_NVIC_it_tc)
     USART_ITConfig(uln.USART_NVIC_reg, USART_IT_TC, ENABLE);
-  if(uln.USART_NVIC_it_rxne)
-    USART_ITConfig(uln.USART_NVIC_reg, USART_IT_RXNE, ENABLE);
+  if(uln.USART_NVIC_it_idle)
+    USART_ITConfig(uln.USART_NVIC_reg, USART_IT_IDLE, ENABLE);
   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
   NVIC_InitTypeDef usart_nvic_init_s = {
     .NVIC_IRQChannel = uln.USART_NVIC_irq,
@@ -40,6 +41,7 @@ void usart_nvic_init(struct usart_lower_nvic_t uln) {
 }
 
 void usart_gpio_init(struct usart_gpio_init_t ugi) {
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO,ENABLE);
   ugi.USART_GPIO_clk_fun(ugi.USART_GPIO_clk, ENABLE);
   GPIO_InitTypeDef usart_gpio_init_s_rx = {
     .GPIO_Pin = ugi.USART_GPIO_rx,
@@ -84,8 +86,16 @@ void usart_dma_init(struct usart_dma_init_t udi) {
   };
   DMA_DeInit(udi.USART_DMA_tx_channel);
   DMA_Init(udi.USART_DMA_tx_channel, &usart_dma_tx_init_s);
+  DMA_ITConfig(udi.USART_DMA_tx_channel,DMA_IT_TE,ENABLE);
+  DMA_ITConfig(udi.USART_DMA_tx_channel,DMA_IT_TC,ENABLE);
+  USART_DMACmd(udi.USART_DMA_reg,USART_DMAReq_Tx,ENABLE);
+  DMA_Cmd(udi.USART_DMA_tx_channel,DISABLE);
   DMA_DeInit(udi.USART_DMA_rx_channel);
   DMA_Init(udi.USART_DMA_rx_channel, &usart_dma_rx_init_s);
+  DMA_ITConfig(udi.USART_DMA_rx_channel,DMA_IT_TE,ENABLE);
+  DMA_ITConfig(udi.USART_DMA_rx_channel,DMA_IT_TC,ENABLE);
+  USART_DMACmd(udi.USART_DMA_reg,USART_DMAReq_Rx,ENABLE);
+  DMA_Cmd(udi.USART_DMA_rx_channel,ENABLE);
 }
 
 void usart_dma_nvic_init(struct usart_dma_nvic_init_t udni) {

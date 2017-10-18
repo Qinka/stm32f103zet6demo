@@ -37,8 +37,9 @@
 #define USART_TEST_USART_IRQHandler USART2_IRQHandler 
 #define USART_TEST_DMA_TX_IRQHandler DMA1_Channel7_IRQHandler
 #define USART_TEST_DMA_RX_IRQHandler DMA1_Channel6_IRQHandler
-#define USART_TX_DMA_IT DMA1_IT_TC7
-#define USART_RX_DMA_IT DMA1_IT_TC6
+#define USART_TX_DMA_IT (DMA1_IT_TC7 | DMA1_IT_TE7)
+#define USART_RX_DMA_IT (DMA1_IT_TC6 | DMA1_IT_TE6)
+#define USART_RX_DMA_FG (DMA1_FLAG_GL6 | DMA1_FLAG_TC6 | DMA1_FLAG_TE6 | DMA1_FLAG_HT6)
 
 // for init
 void usart_test_init(void);

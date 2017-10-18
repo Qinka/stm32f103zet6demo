@@ -28,7 +28,7 @@ struct usart_lower_nvic_t {
   uint8_t        USART_NVIC_pp;     // preemption priority
   uint8_t        USART_NVIC_sp;     // sub priority
   uint8_t        USART_NVIC_it_tc;     // IT bits
-  uint8_t        USART_NVIC_it_rxne;     // IT bits
+  uint8_t        USART_NVIC_it_idle;     // IT bits
 };
 struct usart_gpio_init_t {
   GPIO_TypeDef* USART_GPIO_reg; // register
